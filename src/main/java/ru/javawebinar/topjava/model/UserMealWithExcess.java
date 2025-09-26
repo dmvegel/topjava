@@ -9,13 +9,42 @@ public class UserMealWithExcess {
 
     private final int calories;
 
-    private final boolean excess;
+    private ExcessHolder excessHolder;
 
-    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, boolean excess) {
+    private UserMealWithExcess(LocalDateTime dateTime, String description, int calories) {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-        this.excess = excess;
+    }
+
+    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, boolean excess) {
+        this(dateTime, description, calories);
+        this.excessHolder = new ExcessHolder(excess);
+    }
+
+    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, ExcessHolder excessHolder) {
+        this(dateTime, description, calories);
+        this.excessHolder = excessHolder;
+    }
+
+    public void setExcessHolder(ExcessHolder holder) {
+        this.excessHolder = holder;
+    }
+
+    public static class ExcessHolder {
+        private boolean excess;
+
+        public ExcessHolder(boolean excess) {
+            this.excess = excess;
+        }
+
+        public boolean getExcess() {
+            return excess;
+        }
+
+        public void setExcess(boolean val) {
+            this.excess = val;
+        }
     }
 
     @Override
@@ -24,7 +53,7 @@ public class UserMealWithExcess {
                 "dateTime=" + dateTime +
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
-                ", excess=" + excess +
+                ", excess=" + excessHolder.getExcess() +
                 '}';
     }
 }
