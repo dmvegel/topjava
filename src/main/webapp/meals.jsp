@@ -1,7 +1,7 @@
 <%@ page import="ru.javawebinar.topjava.util.MealsUtil" %>
 <%@ page import="ru.javawebinar.topjava.web.Action" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 
 <html>
 <head>
@@ -22,7 +22,7 @@
             <th></th>
         </tr>
         <c:forEach var="meal" items="${mealsTo}">
-            <tr style="${meal.excess ? "color: red" : "color: green"}">
+            <tr style="color: ${meal.excess ? 'red' : 'green'}">
                 <td>${MealsUtil.formatDate(meal.dateTime)}</td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
