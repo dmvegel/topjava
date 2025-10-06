@@ -31,11 +31,10 @@ public class MealsMemoryDao implements MealsDao {
 
     @Override
     public Meal update(Meal meal) {
-        if (meal.getId() == null) {
-            return null;
+        if (meals.replace(meal.getId(), meal) != null) {
+            return meal;
         }
-        meals.put(meal.getId(), meal);
-        return meal;
+        return null;
     }
 
     @Override
