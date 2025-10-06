@@ -2,9 +2,8 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.storage.MealsDAO;
-import ru.javawebinar.topjava.storage.MemoryStorage;
-import ru.javawebinar.topjava.util.AtomicIdGenerator;
+import ru.javawebinar.topjava.storage.MealsDao;
+import ru.javawebinar.topjava.storage.MealsMemoryDao;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -19,49 +18,35 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private MealsDAO dao;
+    private MealsDao dao;
 
     @Override
     public void init() {
-        dao = new MemoryStorage();
+        dao = new MealsMemoryDao();
         MealsUtil.getInitList().forEach(dao::create);
         log.debug("meals initialized with size {}", dao.getAll().size());
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.setCharacterEncoding("UTF-8");
-        Action action = Action.parseAction(request.getParameter("action"));
+        String action = request.getParameter("action");
         if (action == null) {
             showMeals(request, response);
             return;
         }
-        switch (action) {
-            case DELETE:
+        switch (action.toUpperCase()) {
+            case MealsUtil.ACTION_DELETE:
                 handleDelete(request, response);
                 break;
-            case EDIT:
+            case MealsUtil.ACTION_EDIT:
                 handleEdit(request, response);
                 break;
-            case CREATE:
+            case MealsUtil.ACTION_CREATE:
                 forwardToMeal(request, response, null);
                 break;
+            default:
+                showMeals(request, response);
         }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.setCharacterEncoding("UTF-8");
-        Meal meal = buildMeal(request);
-        if (meal.getId() == null) {
-            meal.setId(AtomicIdGenerator.nextId());
-            dao.create(meal);
-            log.debug("create meal {}", meal);
-        } else {
-            dao.update(meal);
-            log.debug("update meal {}", meal);
-        }
-        response.sendRedirect("meals");
     }
 
     private void showMeals(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -82,15 +67,27 @@ public class MealServlet extends HttpServlet {
     private void handleEdit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         Meal meal = dao.get(id);
-        if (meal != null) {
-            forwardToMeal(request, response, meal);
-        }
+        forwardToMeal(request, response, meal);
     }
 
     private void forwardToMeal(HttpServletRequest request, HttpServletResponse response, Meal meal) throws ServletException, IOException {
         request.setAttribute("meal", meal);
         log.debug("forward to meal.jsp");
         request.getRequestDispatcher("meal.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
+        Meal meal = buildMeal(request);
+        if (meal.getId() == null) {
+            dao.create(meal);
+            log.debug("create meal {}", meal);
+        } else {
+            dao.update(meal);
+            log.debug("update meal {}", meal);
+        }
+        response.sendRedirect("meals");
     }
 
     private Meal buildMeal(HttpServletRequest request) {

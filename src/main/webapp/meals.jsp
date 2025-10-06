@@ -1,5 +1,4 @@
 <%@ page import="ru.javawebinar.topjava.util.MealsUtil" %>
-<%@ page import="ru.javawebinar.topjava.web.Action" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 
@@ -10,7 +9,7 @@
 <body>
 <div>
     <h3>Meals</h3>
-    <a href="?action=${Action.CREATE}">Add meal</a>
+    <a href="?action=${MealsUtil.ACTION_CREATE}">Add meal</a>
 </div>
 <div>
     <table border="1">
@@ -26,8 +25,8 @@
                 <td>${MealsUtil.formatDate(meal.dateTime)}</td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="?action=${Action.EDIT}&id=${meal.id}">Update</a></td>
-                <td><a href="?action=${Action.DELETE}&id=${meal.id}">Delete</a></td>
+                <td><a href="?action=${MealsUtil.ACTION_EDIT}&id=${meal.id}">Update</a></td>
+                <td><a href="?action=${MealsUtil.ACTION_DELETE}&id=${meal.id}">Delete</a></td>
             </tr>
         </c:forEach>
     </table>

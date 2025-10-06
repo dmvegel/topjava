@@ -6,13 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class MemoryStorage implements MealsDAO {
+public class MealsMemoryDao implements MealsDao {
     private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
+    private final AtomicInteger counter = new AtomicInteger(1);
 
     @Override
-    public void create(Meal meal) {
-        meals.put(meal.getId(), meal);
+    public Meal create(Meal meal) {
+        meal.setId(counter.incrementAndGet());
+        return meals.put(meal.getId(), meal);
     }
 
     @Override
@@ -26,8 +29,8 @@ public class MemoryStorage implements MealsDAO {
     }
 
     @Override
-    public void update(Meal meal) {
-        meals.put(meal.getId(), meal);
+    public Meal update(Meal meal) {
+        return meals.put(meal.getId(), meal);
     }
 
     @Override
