@@ -15,7 +15,8 @@ public class MealsMemoryDao implements MealsDao {
     @Override
     public Meal create(Meal meal) {
         meal.setId(counter.incrementAndGet());
-        return meals.put(meal.getId(), meal);
+        meals.put(meal.getId(), meal);
+        return meal;
     }
 
     @Override
@@ -30,7 +31,8 @@ public class MealsMemoryDao implements MealsDao {
 
     @Override
     public Meal update(Meal meal) {
-        return meals.put(meal.getId(), meal);
+        meals.put(meal.getId(), meal);
+        return meal;
     }
 
     @Override

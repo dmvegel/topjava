@@ -17,10 +17,6 @@ public class MealsUtil {
     public static final int CALORIES_PER_DAY = 2000;
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static final String ACTION_CREATE = "CREATE";
-    public static final String ACTION_EDIT = "EDIT";
-    public static final String ACTION_DELETE = "DELETE";
-
     public static void main(String[] args) {
         List<Meal> meals = getInitList();
 

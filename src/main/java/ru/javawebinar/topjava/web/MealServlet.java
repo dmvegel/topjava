@@ -17,6 +17,10 @@ import java.time.LocalTime;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
+    public static final String ACTION_CREATE = "CREATE";
+    public static final String ACTION_EDIT = "EDIT";
+    public static final String ACTION_DELETE = "DELETE";
+
     private static final Logger log = getLogger(MealServlet.class);
     private MealsDao dao;
 
@@ -35,13 +39,13 @@ public class MealServlet extends HttpServlet {
             return;
         }
         switch (action.toUpperCase()) {
-            case MealsUtil.ACTION_DELETE:
+            case ACTION_DELETE:
                 handleDelete(request, response);
                 break;
-            case MealsUtil.ACTION_EDIT:
+            case ACTION_EDIT:
                 handleEdit(request, response);
                 break;
-            case MealsUtil.ACTION_CREATE:
+            case ACTION_CREATE:
                 forwardToMeal(request, response, null);
                 break;
             default:
