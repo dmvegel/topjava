@@ -33,11 +33,15 @@ public class MealService {
     }
 
     public List<MealTo> getAll(int userId, int caloriesPerDay) {
-        return MealsUtil.mealToMapping(repository.getAll(userId), caloriesPerDay);
+        return MealsUtil.getTos(repository.getAll(userId), caloriesPerDay);
     }
 
-    public List<MealTo> getAll(int userId, int caloriesPerDay, LocalDateTime start, LocalDateTime end) {
-        return MealsUtil.mealToMapping(repository.getAll(userId, start, end), caloriesPerDay);
+    public List<MealTo> getInRange(int userId, int caloriesPerDay, LocalDateTime start, LocalDateTime end) {
+        return MealsUtil.getFilteredTos(
+                repository.getInRange(userId, start.toLocalDate(), end.toLocalDate()),
+                caloriesPerDay,
+                start.toLocalTime(),
+                end.toLocalTime());
     }
 
     public void update(int userId, Meal meal) {

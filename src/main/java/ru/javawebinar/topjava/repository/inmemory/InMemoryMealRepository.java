@@ -5,9 +5,8 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,8 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> save(SecurityUtil.authUserId(), meal));
+        MealsUtil.createMeals().forEach(meal -> save(1, meal));
+        MealsUtil.createMeals().forEach(meal -> save(2, meal));
     }
 
     @Override
@@ -48,19 +48,19 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return getAllSortedStream(userId)
-                .collect(Collectors.toList());
-    }
-
-    private Stream<Meal> getAllSortedStream(int userId) {
-        return getMealsMap(userId).values().stream()
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed());
+        return sorted(getMealsMap(userId).values().stream());
     }
 
     @Override
-    public List<Meal> getAll(int userId, LocalDateTime start, LocalDateTime end) {
-        return getAllSortedStream(userId)
-                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime(), start, end))
+    public List<Meal> getInRange(int userId, LocalDate start, LocalDate end) {
+        return sorted(getMealsMap(userId).values().stream()
+                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(),
+                        start,
+                        end == LocalDate.MAX ? LocalDate.MAX : end.plusDays(1))));
+    }
+
+    private List<Meal> sorted(Stream<Meal> mealStream) {
+        return mealStream.sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 

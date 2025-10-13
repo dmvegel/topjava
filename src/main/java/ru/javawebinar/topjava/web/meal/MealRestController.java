@@ -17,7 +17,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkIsNew;
 
 @Controller
 public class MealRestController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final MealService service;
 
@@ -31,9 +31,9 @@ public class MealRestController {
         return service.getAll(SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getAll(LocalDateTime start, LocalDateTime end) {
-        log.info("getAll in range");
-        return service.getAll(SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay(), start, end);
+    public List<MealTo> getInRange(LocalDateTime start, LocalDateTime end) {
+        log.info("getInRange");
+        return service.getInRange(SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay(), start, end);
     }
 
     public Meal get(int id) {
