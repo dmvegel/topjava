@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.web.filter.MealFilter;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletException;
@@ -47,14 +46,17 @@ public class MealServlet extends HttpServlet {
                 Integer.parseInt(request.getParameter("calories")));
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        mealRestController.create(meal);
+        if (meal.isNew()) {
+            mealRestController.create(meal);
+        } else {
+            mealRestController.update(meal, meal.getId());
+        }
         response.sendRedirect("meals");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
@@ -71,38 +73,36 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "filter":
-                MealFilter filter = new MealFilter();
-                filter.setDateFrom(getDateOrDefault(request.getParameter("dateFrom"), LocalDate.MIN));
-                filter.setDateTo(getDateOrDefault(request.getParameter("dateTo"), LocalDate.MAX));
-                filter.setTimeFrom(getTimeOrDefault(request.getParameter("timeFrom"), LocalTime.MIN));
-                filter.setTimeTo(getTimeOrDefault(request.getParameter("timeTo"), LocalTime.MAX));
+                LocalDate localDateFrom = getDateOrNull(request.getParameter("dateFrom"));
+                LocalDate localDateTo = getDateOrNull(request.getParameter("dateTo"));
+                LocalTime localTimeFrom = getTimeOrNull(request.getParameter("timeFrom"));
+                LocalTime localTimeTo = getTimeOrNull(request.getParameter("timeTo"));
 
-                request.setAttribute("mealFilter", filter);
+                request.setAttribute("dateFrom", localDateFrom);
+                request.setAttribute("dateTo", localDateTo);
+                request.setAttribute("timeFrom", localTimeFrom);
+                request.setAttribute("timeTo", localTimeTo);
+
                 request.setAttribute("meals",
-                        mealRestController.getInRange(
-                                filter.getDateFrom().atTime(filter.getTimeFrom()),
-                                filter.getDateTo().atTime(filter.getTimeTo())));
+                        mealRestController.getInRange(localDateFrom, localDateTo, localTimeFrom, localTimeTo));
+
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
-            case "login":
-                SecurityUtil.setAuthUserId(Integer.parseInt(request.getParameter("role")));
             case "all":
             default:
-                MealFilter mealFilter = new MealFilter();
                 log.info("getAll");
-                request.setAttribute("mealFilter", mealFilter);
                 request.setAttribute("meals", mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
     }
 
-    private LocalDate getDateOrDefault(String date, LocalDate defaultDate) {
-        return date == null || date.isEmpty() ? defaultDate : LocalDate.parse(date);
+    private LocalDate getDateOrNull(String date) {
+        return date == null || date.isEmpty() ? null : LocalDate.parse(date);
     }
 
-    private LocalTime getTimeOrDefault(String time, LocalTime defaultTime) {
-        return time == null || time.isEmpty() ? defaultTime : LocalTime.parse(time);
+    private LocalTime getTimeOrNull(String time) {
+        return time == null || time.isEmpty() ? null : LocalTime.parse(time);
     }
 
     private int getId(HttpServletRequest request) {

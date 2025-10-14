@@ -21,8 +21,8 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.createMeals().forEach(meal -> save(1, meal));
-        MealsUtil.createMeals().forEach(meal -> save(2, meal));
+        MealsUtil.createMeals(1).forEach(meal -> save(1, meal));
+        MealsUtil.createMeals(2).forEach(meal -> save(2, meal));
     }
 
     @Override
@@ -54,9 +54,7 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public List<Meal> getInRange(int userId, LocalDate start, LocalDate end) {
         return sorted(getMealsMap(userId).values().stream()
-                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(),
-                        start,
-                        end == LocalDate.MAX ? LocalDate.MAX : end.plusDays(1))));
+                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), start, end)));
     }
 
     private List<Meal> sorted(Stream<Meal> mealStream) {

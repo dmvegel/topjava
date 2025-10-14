@@ -22,26 +22,18 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <hr/>
-    <form action="meals" method="get">
-        <input type="hidden" name="action" value="login">
-        <select name="role">
-            <option value="1">User</option>
-            <option ${SecurityUtil.authUserId() == '2' ? 'selected' : ''} value="2">Admin</option>
-        </select>
-        <input type="submit" value="login">
-    </form>
     <h2>Meals</h2>
     <div>
         <form action="meals" method="get">
             <input type="hidden" name="action" value="filter">
             <label for="dateFrom">С</label>
-            <input type="date" name="dateFrom" id="dateFrom" value="${mealFilter.dateFrom}"/>
+            <input type="date" name="dateFrom" id="dateFrom" value="${dateFrom}"/>
             <label for="dateTo">По</label>
-            <input type="date" name="dateTo" id="dateTo" value="${mealFilter.dateTo}"/><br>
+            <input type="date" name="dateTo" id="dateTo" value="${dateTo}"/><br>
             <label for="timeFrom">С</label>
-            <input type="time" name="timeFrom" id="timeFrom" value="${mealFilter.timeFrom}"/>
+            <input type="time" name="timeFrom" id="timeFrom" value="${timeFrom}"/>
             <label for="timeTo">По</label>
-            <input type="time" name="timeTo" id="timeTo" value="${mealFilter.timeTo}"/>
+            <input type="time" name="timeTo" id="timeTo" value="${timeTo}"/>
             <button type="submit">Отфильтровать</button>
         </form>
     </div>

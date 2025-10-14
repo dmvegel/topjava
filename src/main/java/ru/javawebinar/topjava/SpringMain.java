@@ -9,7 +9,9 @@ import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 
 public class SpringMain {
@@ -32,12 +34,16 @@ public class SpringMain {
                     LocalDateTime.of(2020, 1, 1, 10, 4), "description2", 1000), 3);
             System.out.println(mealRestController.getAll());
             System.out.println(mealRestController.getInRange(
-                    LocalDateTime.of(2020, 1, 30, 0, 0),
-                    LocalDateTime.of(2020, 2, 1, 0, 0))
+                    LocalDate.of(2020, 1, 30),
+                    LocalDate.of(2020, 2, 1),
+                    null,
+                    null)
             );
             System.out.println(mealRestController.getInRange(
-                    LocalDateTime.of(2020, 1, 31, 0, 0),
-                    LocalDateTime.of(2020, 1, 31, 15, 0))
+                    LocalDate.of(2020, 1, 31),
+                    LocalDate.of(2020, 1, 31),
+                    LocalTime.of(0, 0, 0),
+                    LocalTime.of(0, 0, 0))
             );
             SecurityUtil.setAuthUserId(2);
             System.out.println(mealRestController.getAll());

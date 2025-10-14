@@ -9,7 +9,8 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
@@ -31,9 +32,13 @@ public class MealRestController {
         return service.getAll(SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getInRange(LocalDateTime start, LocalDateTime end) {
+    public List<MealTo> getInRange(LocalDate dateFrom, LocalDate dateTo, LocalTime timeFrom, LocalTime timeTo) {
         log.info("getInRange");
-        return service.getInRange(SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay(), start, end);
+        return service.getInRange(SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay(),
+                dateFrom == null ? LocalDate.MIN : dateFrom,
+                dateTo == null ? LocalDate.MAX : dateTo,
+                timeFrom == null ? LocalTime.MIN : timeFrom,
+                timeTo == null ? LocalTime.MAX : timeTo);
     }
 
     public Meal get(int id) {
@@ -52,9 +57,9 @@ public class MealRestController {
         service.delete(SecurityUtil.authUserId(), id);
     }
 
-    public void update(Meal meal, int id) {
+    public Meal update(Meal meal, int id) {
         log.info("update {} with id={}", meal, id);
         assureIdConsistent(meal, id);
-        service.update(SecurityUtil.authUserId(), meal);
+        return service.update(SecurityUtil.authUserId(), meal);
     }
 }

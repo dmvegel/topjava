@@ -6,7 +6,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -37,16 +37,17 @@ public class MealService {
         return MealsUtil.getTos(repository.getAll(userId), caloriesPerDay);
     }
 
-    public List<MealTo> getInRange(int userId, int caloriesPerDay, LocalDateTime start, LocalDateTime end) {
-        return MealsUtil.getFilteredTos(
-                repository.getInRange(userId, start.toLocalDate(), end.toLocalDate()),
-                caloriesPerDay,
-                start.toLocalTime(),
-                end.toLocalTime() == LocalTime.MAX ? LocalTime.MAX : end.toLocalTime().plusMinutes(1));
+    public List<MealTo> getInRange(int userId,
+                                   int caloriesPerDay,
+                                   LocalDate dateFrom,
+                                   LocalDate dateTo,
+                                   LocalTime timeFrom,
+                                   LocalTime timeTo) {
+        return MealsUtil.getFilteredTos(repository.getInRange(userId, dateFrom, dateTo), caloriesPerDay, timeFrom, timeTo);
     }
 
-    public void update(int userId, Meal meal) {
-        checkNotFound(repository.save(userId, meal), meal.getId());
+    public Meal update(int userId, Meal meal) {
+        return checkNotFound(repository.save(userId, meal), meal.getId());
     }
 
 }
