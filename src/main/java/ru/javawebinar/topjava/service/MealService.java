@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
@@ -41,7 +42,7 @@ public class MealService {
                 repository.getInRange(userId, start.toLocalDate(), end.toLocalDate()),
                 caloriesPerDay,
                 start.toLocalTime(),
-                end.toLocalTime());
+                end.toLocalTime() == LocalTime.MAX ? LocalTime.MAX : end.toLocalTime().plusMinutes(1));
     }
 
     public void update(int userId, Meal meal) {
