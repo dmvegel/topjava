@@ -54,7 +54,9 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public List<Meal> getInRange(int userId, LocalDate start, LocalDate end) {
         return sorted(getMealsMap(userId).values().stream()
-                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), start, end)));
+                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(),
+                        start,
+                        end == LocalDate.MAX ? LocalDate.MAX : end.plusDays(1))));
     }
 
     private List<Meal> sorted(Stream<Meal> mealStream) {
