@@ -46,8 +46,8 @@ public class MealService {
         return MealsUtil.getFilteredTos(repository.getInRange(userId, dateFrom, dateTo), caloriesPerDay, timeFrom, timeTo);
     }
 
-    public Meal update(int userId, Meal meal) {
-        return checkNotFound(repository.save(userId, meal), meal.getId());
+    public void update(int userId, Meal meal) {
+        checkNotFound(repository.save(userId, meal), meal.getId());
     }
 
 }
