@@ -5,4 +5,3 @@ target
 log
 *.patch
 *.*~
-src/main/resources/db/postgres.properties
