@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
@@ -60,10 +61,15 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenInclusive() {
-        LocalDate localDateLeft = LocalDate.parse("2020-01-30");
-        LocalDate localDateRight = LocalDate.parse("2020-01-31");
-        List<Meal> mealsSameDay = mealService.getBetweenInclusive(localDateRight, localDateRight, USER_ID);
+        LocalDate localDate = LocalDate.of(2020, 1, 31);
+        List<Meal> mealsSameDay = mealService.getBetweenInclusive(localDate, localDate, USER_ID);
         assertMatch(mealsSameDay, Arrays.asList(user_Meal_7, user_Meal_6, user_Meal_5, user_Meal_4));
+    }
+
+    @Test
+    public void getBetweenSorted() {
+        LocalDate localDateLeft = LocalDate.of(2020, 1, 30);
+        LocalDate localDateRight = LocalDate.of(2020, 1, 31);
         List<Meal> meals = mealService.getBetweenInclusive(localDateLeft, localDateRight, USER_ID);
         assertMatch(meals, Arrays.asList(user_Meal_7, user_Meal_6, user_Meal_5, user_Meal_4, user_Meal_3, user_Meal_2, user_Meal_1));
     }
@@ -95,5 +101,20 @@ public class MealServiceTest {
     public void duplicateDateTimeCreate() {
         assertThrows(DuplicateKeyException.class, () ->
                 mealService.create(new Meal(null, user_Meal_1.getDateTime(), "duplicate", 500), USER_ID));
+    }
+
+    @Test
+    public void getAnotherUserMeal() {
+        assertThrows(NotFoundException.class, () -> mealService.get(ADMIN_MEAL_1_ID, ADMIN_ID));
+    }
+
+    @Test
+    public void deleteAnotherUserMeals() {
+        assertThrows(NotFoundException.class, () -> mealService.delete(ADMIN_MEAL_1_ID, ADMIN_ID));
+    }
+
+    @Test
+    public void updateAnotherUserMeals() {
+        assertThrows(NotFoundException.class, () -> mealService.update(admin_Meal_1, ADMIN_ID));
     }
 }

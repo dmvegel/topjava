@@ -11,6 +11,7 @@ import java.util.List;
 import static ru.javawebinar.topjava.util.DateTimeUtil.atStartOfDayOrMin;
 import static ru.javawebinar.topjava.util.DateTimeUtil.atStartOfNextDayOrMax;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkUserConsistent;
 
 @Service
 public class MealService {
@@ -22,10 +23,12 @@ public class MealService {
     }
 
     public Meal get(int id, int userId) {
+        checkUserConsistent(userId, id);
         return checkNotFound(repository.get(id, userId), id);
     }
 
     public void delete(int id, int userId) {
+        checkUserConsistent(userId, id);
         checkNotFound(repository.delete(id, userId), id);
     }
 
@@ -38,6 +41,7 @@ public class MealService {
     }
 
     public void update(Meal meal, int userId) {
+        checkUserConsistent(userId, meal.getId());
         checkNotFound(repository.save(meal, userId), meal.getId());
     }
 

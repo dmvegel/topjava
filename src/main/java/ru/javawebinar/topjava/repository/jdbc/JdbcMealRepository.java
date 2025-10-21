@@ -34,7 +34,8 @@ public class JdbcMealRepository extends AbstractJdbcRepository<Meal> implements 
     @Override
     protected int update(Meal meal, MapSqlParameterSource insertParams) {
         return namedParameterJdbcTemplate.update(
-                "UPDATE meals SET date_time=:date_time, description=:description, calories=:calories, user_id=:user_id WHERE id=:id",
+                "UPDATE meals SET date_time=:date_time, description=:description, calories=:calories " +
+                        "WHERE id=:id AND user_id=:user_id",
                 insertParams
         );
     }
