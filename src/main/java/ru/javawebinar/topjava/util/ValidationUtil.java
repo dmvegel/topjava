@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 public class ValidationUtil {
 
@@ -39,12 +38,6 @@ public class ValidationUtil {
             entity.setId(id);
         } else if (entity.getId() != id) {
             throw new IllegalArgumentException(entity + " must be with id=" + id);
-        }
-    }
-
-    public static void checkUserConsistent(int userId, int id) {
-        if (userId != SecurityUtil.authUserId()) {
-            throw new NotFoundException("Not found entity with id=" + id);
         }
     }
 }

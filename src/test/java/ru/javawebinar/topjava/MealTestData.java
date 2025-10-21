@@ -24,7 +24,7 @@ public class MealTestData {
     public static final int ADMIN_MEAL_6_ID = START_SEQ + 15;
     public static final int ADMIN_MEAL_7_ID = START_SEQ + 16;
 
-    public static final LocalDateTime DEFAULT_TIME = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
+    public static final LocalDateTime DEFAULT_TIME = LocalDateTime.of(2025, 1, 1, 1, 0);
 
     public static final int NOT_FOUND = 999999;
 
@@ -45,7 +45,7 @@ public class MealTestData {
     public static final Meal admin_Meal_7 = new Meal(ADMIN_MEAL_7_ID, LocalDateTime.of(2020, 1, 31, 20, 0), "Ужин админа", 410);
 
     public static Meal getNew() {
-        return new Meal(null, DEFAULT_TIME, "", 0);
+        return new Meal(null, DEFAULT_TIME, "description", 100);
     }
 
     public static Meal createUpdated(Meal meal) {
