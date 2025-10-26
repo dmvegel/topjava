@@ -1,4 +1,4 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3a5a4ab93d1047d5bf1b54f8517d22c3)](https://app.codacy.com/gh/dmvegel/topjava/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/bee16f3145654047a0505c62aeefd8a2)](https://app.codacy.com/gh/dmvegel/topjava/dashboard)
 
 [Java Enterprise Online Project](https://javaops.ru/view/topjava)
 ===============================
