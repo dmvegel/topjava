@@ -4,9 +4,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
-import org.junit.rules.TestRule;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
-import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +15,19 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.TransactionSystemException;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.persistence.RollbackException;
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -39,12 +43,10 @@ public class MealServiceTest {
     private static final List<String> results = new ArrayList<>();
 
     @Rule
-    public TestRule timingRule = (statement, description) -> new Statement() {
+    public Stopwatch stopwatch = new Stopwatch() {
         @Override
-        public void evaluate() throws Throwable {
-            long start = System.currentTimeMillis();
-            statement.evaluate();
-            String result = String.format("%s took %d ms.", description.getMethodName(), System.currentTimeMillis() - start);
+        protected void finished(long l, Description description) {
+            String result = String.format("%-25s %3d ms", description.getMethodName(), l / 1000000);
             log.info(result);
             results.add(result);
         }
@@ -54,7 +56,7 @@ public class MealServiceTest {
     public static ExternalResource classTimingRule = new ExternalResource() {
         @Override
         protected void after() {
-            results.forEach(log::info);
+            log.info("\n{}", String.join("\n", results));
         }
     };
 
@@ -114,6 +116,19 @@ public class MealServiceTest {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), getUpdated());
+    }
+
+    @Test
+    public void descriptionViolationUpdate() {
+        Meal updated = getUpdated();
+        updated.setDescription("looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo" +
+                "ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong description");
+        try {
+            service.update(updated, USER_ID);
+        } catch (TransactionSystemException e) {
+            assertTrue(e.getCause() instanceof RollbackException);
+            assertTrue(e.getCause().getCause() instanceof ConstraintViolationException);
+        }
     }
 
     @Test
