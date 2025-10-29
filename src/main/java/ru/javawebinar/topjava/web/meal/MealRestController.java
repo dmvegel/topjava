@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -55,6 +56,9 @@ public class MealRestController {
     public void update(Meal meal, int id) {
         int userId = SecurityUtil.authUserId();
         assureIdConsistent(meal, id);
+        User user = new User();
+        user.setId(userId);
+        meal.setUser(user);
         log.info("update {} for user {}", meal, userId);
         service.update(meal, userId);
     }
