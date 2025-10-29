@@ -31,10 +31,7 @@ public class JpaMealRepository implements MealRepository {
             if (dbMeal == null || dbMeal.getUser().getId() != userId) {
                 return null;
             }
-            dbMeal.setDescription(meal.getDescription());
-            dbMeal.setCalories(meal.getCalories());
-            dbMeal.setDateTime(meal.getDateTime());
-            return dbMeal;
+            return em.merge(meal);
         }
     }
 

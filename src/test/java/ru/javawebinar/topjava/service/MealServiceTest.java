@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -42,7 +43,7 @@ public class MealServiceTest {
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long l, Description description) {
-            String result = String.format("%-25s %3d ms", description.getMethodName(), l / 1000000);
+            String result = String.format("%-25s %3d ms", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(l));
             log.info(result);
             results.add(result);
         }
@@ -116,7 +117,7 @@ public class MealServiceTest {
 
     @Test
     public void updateNotOwn() {
-        assertThrows(NotFoundException.class, () -> service.update(meal1, ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> service.update(getUpdated(), ADMIN_ID));
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), meal1);
     }
 
