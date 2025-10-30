@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
@@ -9,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.time.LocalDateTime.of;
-import static ru.javawebinar.topjava.UserTestData.USER_ID;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealTestData {
@@ -36,10 +34,6 @@ public class MealTestData {
     }
 
     public static Meal getUpdated() {
-        Meal meal = new Meal(MEAL1_ID, meal1.getDateTime().plus(2, ChronoUnit.MINUTES), "Обновленный завтрак", 200);
-        User user = new User();
-        user.setId(USER_ID);
-        meal.setUser(user);
-        return meal;
+        return new Meal(MEAL1_ID, meal1.getDateTime().plus(2, ChronoUnit.MINUTES), "Обновленный завтрак", 200);
     }
 }
