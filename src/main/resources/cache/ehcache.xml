@@ -22,4 +22,6 @@
     </cache-template>
 
     <cache alias="users" uses-template="singleNonExpiryCache"/>
+    <cache alias="meals" uses-template="expiryCache"/>
+    <cache alias="meal" uses-template="singleNonExpiryCache"/>
 </config>

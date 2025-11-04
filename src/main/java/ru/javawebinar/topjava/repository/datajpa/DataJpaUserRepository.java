@@ -2,27 +2,35 @@ package ru.javawebinar.topjava.repository.datajpa;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.List;
 
+import static ru.javawebinar.topjava.repository.datajpa.DataJpaMealRepository.SORT_BY_DATE_TIME;
+
 @Repository
+@Transactional(readOnly = true)
 public class DataJpaUserRepository implements UserRepository {
     private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
 
     private final CrudUserRepository crudRepository;
+    private final CrudMealRepository crudMealRepository;
 
-    public DataJpaUserRepository(CrudUserRepository crudRepository) {
+    public DataJpaUserRepository(CrudUserRepository crudRepository, CrudMealRepository jpaMealRepository) {
         this.crudRepository = crudRepository;
+        this.crudMealRepository = jpaMealRepository;
     }
 
     @Override
+    @Transactional
     public User save(User user) {
         return crudRepository.save(user);
     }
 
     @Override
+    @Transactional
     public boolean delete(int id) {
         return crudRepository.delete(id) != 0;
     }
@@ -40,5 +48,12 @@ public class DataJpaUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         return crudRepository.findAll(SORT_NAME_EMAIL);
+    }
+
+    @Override
+    public User getUserWithMeals(int userId) {
+        User user = get(userId);
+        user.setMeals(crudMealRepository.getByUserId(userId, SORT_BY_DATE_TIME));
+        return user;
     }
 }

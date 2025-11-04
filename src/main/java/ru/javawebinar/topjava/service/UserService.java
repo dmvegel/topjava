@@ -50,4 +50,8 @@ public class UserService {
         Assert.notNull(user, "user must not be null");
         checkNotFound(repository.save(user), user.id());
     }
+
+    public User getUserWithMeals(int userId) {
+        return repository.getUserWithMeals(userId);
+    }
 }
