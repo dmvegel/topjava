@@ -8,8 +8,6 @@ import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.List;
 
-import static ru.javawebinar.topjava.repository.datajpa.DataJpaMealRepository.SORT_BY_DATE_TIME;
-
 @Repository
 public class DataJpaUserRepository implements UserRepository {
     private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
@@ -51,8 +49,6 @@ public class DataJpaUserRepository implements UserRepository {
     @Override
     @Transactional(readOnly = true)
     public User getUserWithMeals(int userId) {
-        User user = get(userId);
-        user.setMeals(crudMealRepository.getByUserId(userId, SORT_BY_DATE_TIME));
-        return user;
+        return crudUserRepository.getUserWithMeals(userId);
     }
 }

@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.service.datajpa;
 
-import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.MealTestData;
@@ -9,25 +8,25 @@ import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
 
-import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
+import static ru.javawebinar.topjava.MealTestData.NOT_FOUND;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 @ActiveProfiles(profiles = Profiles.DATAJPA)
 public class DataJpaUserServiceTest extends AbstractUserServiceTest {
     @Test
     public void getUserWithMeals() {
-        User result = service.getUserWithMeals(USER_ID);
-        USER_MATCHER.assertMatch((User) Hibernate.unproxy(result), UserTestData.user);
-        MEAL_MATCHER.assertMatch(result.getMeals(), MealTestData.meals);
+        User expected = new User(UserTestData.user);
+        expected.setMeals(MealTestData.meals);
+        USER_WITH_MEALS_MATCHER.assertMatch(service.getUserWithMeals(USER_ID), expected);
     }
 
     @Test
     public void getUserWithEmptyMeals() {
-        User result = service.getUserWithMeals(GUEST_ID);
-        USER_MATCHER.assertMatch((User) Hibernate.unproxy(result), UserTestData.guest);
-        MEAL_MATCHER.assertMatch(result.getMeals(), emptyList());
-        assertThat(result.getMeals()).isEmpty();
+        USER_WITH_MEALS_MATCHER.assertMatch(service.getUserWithMeals(GUEST_ID), UserTestData.guest);
+    }
+
+    @Test
+    public void getNotExistingUserWithMeals() {
+        USER_WITH_MEALS_MATCHER.assertMatch(service.getUserWithMeals(NOT_FOUND), null);
     }
 }

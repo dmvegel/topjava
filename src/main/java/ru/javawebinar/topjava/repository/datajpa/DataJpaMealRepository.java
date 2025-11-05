@@ -53,8 +53,6 @@ public class DataJpaMealRepository implements MealRepository {
     @Override
     @Transactional(readOnly = true)
     public Meal getMealWithUser(int id, int userId) {
-        Meal meal = get(id, userId);
-        meal.setUser(crudUserRepository.findById(userId).orElseThrow());
-        return meal;
+        return crudMealRepository.getMealWithUser(id, userId);
     }
 }
