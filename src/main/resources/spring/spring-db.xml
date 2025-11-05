@@ -5,14 +5,11 @@
        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
-       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
-       http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
-
-    <tx:annotation-driven/>
+       http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <jdbc:initialize-database data-source="dataSource" enabled="${database.init}">
         <jdbc:script location="${jdbc.initLocation}"/>
@@ -29,13 +26,6 @@
               p:url="${database.url}"
               p:username="${database.username}"
               p:password="${database.password}"/>
-
-        <util:map id="jpaProps">
-            <entry key="#{T(org.hibernate.cfg.AvailableSettings).FORMAT_SQL}" value="true"/>
-            <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}" value="true"/>
-            <entry key="#{T(org.hibernate.cfg.AvailableSettings).JPA_PROXY_COMPLIANCE}" value="false"/>
-            <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_AUTO}" value="create"/>
-        </util:map>
     </beans>
 
     <beans profile="postgres">
@@ -56,11 +46,6 @@
               p:url="${database.url}"
               p:username="${database.username}"
               p:password="${database.password}"/>
-        <util:map id="jpaProps">
-            <entry key="#{T(org.hibernate.cfg.AvailableSettings).FORMAT_SQL}" value="true"/>
-            <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}" value="true"/>
-            <entry key="#{T(org.hibernate.cfg.AvailableSettings).JPA_PROXY_COMPLIANCE}" value="false"/>
-        </util:map>
     </beans>
 
     <beans profile="jdbc">
@@ -73,27 +58,34 @@
             <constructor-arg ref="jdbcTemplate"/>
         </bean>
     </beans>
+    <beans profile="datajpa, jpa">
+        <tx:annotation-driven/>
+        <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+              p:dataSource-ref="dataSource"
+              p:packagesToScan="ru.javawebinar.**.model">
+            <property name="jpaPropertyMap">
+                <map>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).FORMAT_SQL}" value="true"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}" value="true"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).JPA_PROXY_COMPLIANCE}" value="false"/>
+                </map>
+            </property>
+            <property name="jpaVendorAdapter">
+                <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
+                      p:showSql="${jpa.showSql}">
+                </bean>
+            </property>
+
+        </bean>
+        <!-- Transaction manager for a single JPA EntityManagerFactory (alternative to JTA) -->
+        <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
+              p:entityManagerFactory-ref="entityManagerFactory"/>
+    </beans>
     <beans profile="jpa">
         <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
     </beans>
     <beans profile="datajpa">
         <context:component-scan base-package="ru.javawebinar.**.repository.datajpa"/>
         <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa"/>
-    </beans>
-    <beans profile="datajpa, jpa">
-        <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
-              p:dataSource-ref="dataSource"
-              p:packagesToScan="ru.javawebinar.**.model">
-            <!--                        p:persistenceUnitName="persistenceUnit">-->
-            <property name="jpaPropertyMap" ref="jpaProps"/>
-            <property name="jpaVendorAdapter">
-                <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
-                      p:showSql="${jpa.showSql}">
-                </bean>
-            </property>
-        </bean>
-        <!-- Transaction manager for a single JPA EntityManagerFactory (alternative to JTA) -->
-        <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
-              p:entityManagerFactory-ref="entityManagerFactory"/>
     </beans>
 </beans>

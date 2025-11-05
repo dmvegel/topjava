@@ -1,8 +1,6 @@
 package ru.javawebinar.topjava;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.StandardEnvironment;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.MealTo;
@@ -18,13 +16,11 @@ import java.util.List;
 public class SpringMain {
     public static void main(String[] args) {
         try {
-            ConfigurableEnvironment environment = new StandardEnvironment();
-            environment.setActiveProfiles(Profiles.getActiveDbProfile(), Profiles.DATAJPA);
             ClassPathXmlApplicationContext appCtx = new ClassPathXmlApplicationContext();
-            appCtx.setEnvironment(environment);
+            appCtx.getEnvironment().setActiveProfiles(Profiles.getActiveDbProfile(), Profiles.DATAJPA);
             appCtx.setConfigLocations("spring/spring-app.xml", "spring/spring-db.xml");
             appCtx.refresh();
-            
+
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));

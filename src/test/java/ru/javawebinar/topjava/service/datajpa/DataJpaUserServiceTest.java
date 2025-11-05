@@ -10,11 +10,12 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
 
 import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 @ActiveProfiles(profiles = Profiles.DATAJPA)
-public class UserServiceDataJpaTest extends AbstractUserServiceTest {
+public class DataJpaUserServiceTest extends AbstractUserServiceTest {
     @Test
     public void getUserWithMeals() {
         User result = service.getUserWithMeals(USER_ID);
@@ -27,5 +28,6 @@ public class UserServiceDataJpaTest extends AbstractUserServiceTest {
         User result = service.getUserWithMeals(GUEST_ID);
         USER_MATCHER.assertMatch((User) Hibernate.unproxy(result), UserTestData.guest);
         MEAL_MATCHER.assertMatch(result.getMeals(), emptyList());
+        assertThat(result.getMeals()).isEmpty();
     }
 }

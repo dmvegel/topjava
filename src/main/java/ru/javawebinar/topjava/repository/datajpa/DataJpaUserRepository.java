@@ -11,46 +11,45 @@ import java.util.List;
 import static ru.javawebinar.topjava.repository.datajpa.DataJpaMealRepository.SORT_BY_DATE_TIME;
 
 @Repository
-@Transactional(readOnly = true)
 public class DataJpaUserRepository implements UserRepository {
     private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
 
-    private final CrudUserRepository crudRepository;
+    private final CrudUserRepository crudUserRepository;
     private final CrudMealRepository crudMealRepository;
 
-    public DataJpaUserRepository(CrudUserRepository crudRepository, CrudMealRepository jpaMealRepository) {
-        this.crudRepository = crudRepository;
-        this.crudMealRepository = jpaMealRepository;
+    public DataJpaUserRepository(CrudUserRepository crudRepository, CrudMealRepository crudMealRepository) {
+        this.crudUserRepository = crudRepository;
+        this.crudMealRepository = crudMealRepository;
     }
 
     @Override
     @Transactional
     public User save(User user) {
-        return crudRepository.save(user);
+        return crudUserRepository.save(user);
     }
 
     @Override
-    @Transactional
     public boolean delete(int id) {
-        return crudRepository.delete(id) != 0;
+        return crudUserRepository.delete(id) != 0;
     }
 
     @Override
     public User get(int id) {
-        return crudRepository.findById(id).orElse(null);
+        return crudUserRepository.findById(id).orElse(null);
     }
 
     @Override
     public User getByEmail(String email) {
-        return crudRepository.getByEmail(email);
+        return crudUserRepository.getByEmail(email);
     }
 
     @Override
     public List<User> getAll() {
-        return crudRepository.findAll(SORT_NAME_EMAIL);
+        return crudUserRepository.findAll(SORT_NAME_EMAIL);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getUserWithMeals(int userId) {
         User user = get(userId);
         user.setMeals(crudMealRepository.getByUserId(userId, SORT_BY_DATE_TIME));
