@@ -42,7 +42,7 @@ public class DataJpaMealRepository implements MealRepository {
     }
 
     public List<Meal> getAll(int userId) {
-        return crudMealRepository.getByUserId(userId, SORT_BY_DATE_TIME);
+        return crudMealRepository.getByUserId(userId);
     }
 
     @Override
@@ -51,7 +51,6 @@ public class DataJpaMealRepository implements MealRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Meal getMealWithUser(int id, int userId) {
         return crudMealRepository.getMealWithUser(id, userId);
     }

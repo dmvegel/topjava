@@ -13,11 +13,9 @@ public class DataJpaUserRepository implements UserRepository {
     private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
 
     private final CrudUserRepository crudUserRepository;
-    private final CrudMealRepository crudMealRepository;
 
-    public DataJpaUserRepository(CrudUserRepository crudRepository, CrudMealRepository crudMealRepository) {
+    public DataJpaUserRepository(CrudUserRepository crudRepository) {
         this.crudUserRepository = crudRepository;
-        this.crudMealRepository = crudMealRepository;
     }
 
     @Override
@@ -47,7 +45,6 @@ public class DataJpaUserRepository implements UserRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public User getUserWithMeals(int userId) {
         return crudUserRepository.getUserWithMeals(userId);
     }
