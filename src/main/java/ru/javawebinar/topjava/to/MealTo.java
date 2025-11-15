@@ -1,10 +1,13 @@
 package ru.javawebinar.topjava.to;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 
 public class MealTo {
     private final Integer id;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -39,6 +42,10 @@ public class MealTo {
 
     public boolean isExcess() {
         return excess;
+    }
+
+    public static MealTo empty() {
+        return new MealTo(null, null, null, 0, false);
     }
 
     @Override

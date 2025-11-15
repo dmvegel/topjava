@@ -5,13 +5,18 @@ import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.TimingRules;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -23,6 +28,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 public abstract class AbstractServiceTest {
+    @Autowired
+    Environment environment;
 
     @ClassRule
     public static ExternalResource summary = TimingRules.SUMMARY;
@@ -35,5 +42,9 @@ public abstract class AbstractServiceTest {
         assertThatExceptionOfType(Throwable.class)
                 .isThrownBy(runnable::run)
                 .withRootCauseInstanceOf(rootExceptionClass);
+    }
+
+    protected boolean isJdbcProfileNotActive() {
+        return !Arrays.asList(environment.getActiveProfiles()).contains(Profiles.JDBC);
     }
 }
