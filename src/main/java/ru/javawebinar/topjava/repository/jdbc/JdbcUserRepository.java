@@ -57,7 +57,9 @@ public class JdbcUserRepository implements UserRepository {
     private final Validator validator;
 
     @Autowired
-    public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, Validator validator) {
+    public JdbcUserRepository(JdbcTemplate jdbcTemplate,
+                              NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                              Validator validator) {
         this.insertUser = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
@@ -98,19 +100,23 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public User get(int id) {
-        Map<Integer, User> users = jdbcTemplate.query("SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id WHERE id=?", USER_MAPPER, id);
+        Map<Integer, User> users = jdbcTemplate.query(
+                "SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id WHERE id=?", USER_MAPPER, id);
         return Objects.requireNonNull(users).get(id);
     }
 
     @Override
     public User getByEmail(String email) {
-        Map<Integer, User> users = jdbcTemplate.query("SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id  WHERE email=?", USER_MAPPER, email);
+        Map<Integer, User> users = jdbcTemplate.query(
+                "SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id  WHERE email=?", USER_MAPPER, email);
         return Objects.requireNonNull(DataAccessUtils.singleResult(Objects.requireNonNull(users).entrySet())).getValue();
     }
 
     @Override
     public List<User> getAll() {
-        return new ArrayList<>(Objects.requireNonNull(jdbcTemplate.query("SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id ORDER BY name, email", USER_MAPPER)).values());
+        return new ArrayList<>(Objects.requireNonNull(jdbcTemplate.query(
+                "SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id ORDER BY name, email",
+                USER_MAPPER)).values());
     }
 
     private void batchUpdate(List<Role> roles, Integer userId) {
