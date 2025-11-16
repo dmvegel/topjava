@@ -18,7 +18,9 @@
         <jdbc:script encoding="utf-8" location="classpath:db/populateDB.sql"/>
     </jdbc:initialize-database>
 
-    <!-- Choose profile from (hsqldb/ postgres) and (jdbc/ datajpa/ jpa) -->
+    <context:property-placeholder
+            location="classpath*:db/*.properties, classpath*:cache/*.properties"
+            system-properties-mode="OVERRIDE"/>
 
     <beans profile="hsqldb">
         <context:property-placeholder location="classpath:db/hsqldb.properties" system-properties-mode="OVERRIDE"/>
@@ -76,11 +78,17 @@
         <bean id="validator" factory-bean="validatorFactory" factory-method="getValidator"/>
     </beans>
 
+    <beans profile="!test">
+        <context:property-placeholder location="classpath:cache/cache.properties"/>
+    </beans>
+    <beans profile="test">
+        <context:property-placeholder location="classpath:cache/no-cache.properties"/>
+    </beans>
+
     <beans profile="jpa,datajpa">
         <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
               p:dataSource-ref="dataSource"
               p:packagesToScan="ru.javawebinar.**.model">
-            <!--p:persistenceUnitName="persistenceUnit">-->
 
             <property name="jpaPropertyMap">
                 <map>
@@ -95,7 +103,8 @@
                            value="org.hibernate.cache.jcache.internal.JCacheRegionFactory"/>
                     <entry key="#{T(org.hibernate.cache.jcache.ConfigSettings).PROVIDER}"
                            value="org.ehcache.jsr107.EhcacheCachingProvider"/>
-                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SECOND_LEVEL_CACHE}" value="true"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SECOND_LEVEL_CACHE}"
+                           value="${hibernate.cache.use_second_level_cache}"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_QUERY_CACHE}"
                            value="false"/> <!--default-->
                     <!--

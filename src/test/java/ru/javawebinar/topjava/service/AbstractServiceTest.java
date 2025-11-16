@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
+@ActiveProfiles(value = Profiles.TEST, resolver = ActiveDbProfileResolver.class)
 public abstract class AbstractServiceTest {
     @Autowired
     Environment environment;
