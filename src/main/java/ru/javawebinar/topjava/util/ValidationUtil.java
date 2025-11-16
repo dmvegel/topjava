@@ -51,7 +51,7 @@ public class ValidationUtil {
     public static <T> void validate(T object, Validator validator) {
         Set<ConstraintViolation<T>> violations = validator.validate(object);
         if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
+            throw new RuntimeException(new ConstraintViolationException(violations));
         }
     }
 }
