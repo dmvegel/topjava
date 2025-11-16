@@ -18,6 +18,7 @@ import java.time.LocalTime;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 
 @Controller
+@RequestMapping("/meals")
 public class JspMealController {
     private static final Logger log = LoggerFactory.getLogger(JspMealController.class);
 
@@ -27,7 +28,7 @@ public class JspMealController {
         this.mealService = mealService;
     }
 
-    @PostMapping("/meals/create")
+    @PostMapping("/create")
     protected String createMeal(@ModelAttribute("meal") MealTo mealTo) {
         int userId = SecurityUtil.authUserId();
         log.info("create meal for user {}", userId);
@@ -35,7 +36,7 @@ public class JspMealController {
         return "redirect:/meals";
     }
 
-    @PostMapping("/meals/delete")
+    @PostMapping("/delete")
     protected String deleteMeal(@RequestParam("id") int id,
                                 @RequestHeader(value = "Referer", required = false) String referer) {
         int userId = SecurityUtil.authUserId();
@@ -44,7 +45,7 @@ public class JspMealController {
         return referer != null ? "redirect:" + referer : "redirect:/meals";
     }
 
-    @PostMapping("/meals/update")
+    @PostMapping("/update")
     protected String updateMeal(@ModelAttribute MealTo mealTo) {
         int userId = SecurityUtil.authUserId();
         log.info("update meal {} for user {}", mealTo.getId(), userId);
@@ -57,20 +58,20 @@ public class JspMealController {
         return "redirect:/meals";
     }
 
-    @GetMapping("/meals/update")
+    @GetMapping("/update")
     protected String updateMealForm(@ModelAttribute MealTo mealTo) {
         log.info("GET update meal form for meal {} user {}", mealTo.getId(), SecurityUtil.authUserId());
         return "mealForm";
     }
 
-    @GetMapping("/meals/create")
+    @GetMapping("/create")
     protected String createMealForm(Model model) {
         log.info("GET create meal form for user {}", SecurityUtil.authUserId());
         model.addAttribute("mealTo", MealTo.empty());
         return "mealForm";
     }
 
-    @GetMapping("/meals")
+    @GetMapping
     protected String doGetAll(Model model) {
         int userId = SecurityUtil.authUserId();
         log.info("getAll for user {}", userId);
@@ -79,7 +80,7 @@ public class JspMealController {
         return "meals";
     }
 
-    @GetMapping(value = "/meals/filter")
+    @GetMapping(value = "/filter")
     protected String doFilter(@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                               @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
