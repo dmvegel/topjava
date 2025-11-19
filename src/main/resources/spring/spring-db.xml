@@ -18,6 +18,10 @@
         <jdbc:script encoding="utf-8" location="classpath:db/populateDB.sql"/>
     </jdbc:initialize-database>
 
+    <beans>
+        <tx:annotation-driven/>
+    </beans>
+
     <beans profile="hsqldb">
         <context:property-placeholder location="classpath:db/hsqldb.properties" system-properties-mode="OVERRIDE"/>
 
@@ -71,10 +75,6 @@
 
         <bean id="validatorFactory" class="javax.validation.Validation" factory-method="buildDefaultValidatorFactory"/>
         <bean id="validator" factory-bean="validatorFactory" factory-method="getValidator"/>
-    </beans>
-
-    <beans profile="jdbc,jpa,datajpa">
-        <tx:annotation-driven/>
     </beans>
 
     <beans profile="jpa,datajpa">

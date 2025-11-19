@@ -8,7 +8,6 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -69,7 +68,6 @@ public class User extends AbstractNamedEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/a/44988100/548473
-    @OrderBy("dateTime DESC")
     private Set<Meal> meals;
 
     public User() {

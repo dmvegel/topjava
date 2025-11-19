@@ -13,10 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
-import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.TimingRules;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -44,9 +41,5 @@ public abstract class AbstractServiceTest {
         assertThatExceptionOfType(Throwable.class)
                 .isThrownBy(runnable::run)
                 .withRootCauseInstanceOf(rootExceptionClass);
-    }
-
-    protected boolean isJdbcProfileNotActive() {
-        return !Arrays.asList(environment.getActiveProfiles()).contains(Profiles.JDBC);
     }
 }

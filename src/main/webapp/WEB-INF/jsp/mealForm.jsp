@@ -6,23 +6,23 @@
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
-<jsp:useBean id="mealTo" type="ru.javawebinar.topjava.to.MealTo" scope="request"/>
-<c:set var="isCreate" value="${mealTo.id == null}"/>
+<jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
+<c:set var="isCreate" value="${meal.id == null}"/>
 <section>
     <h2><spring:message code="${isCreate ? 'meal.add' : 'meal.edit'}"/></h2>
     <form method="post" action="meals/${isCreate ? 'create' : 'update'}">
-        <input type="hidden" name="id" value="${mealTo.id}">
+        <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal.datetime"/>:</dt>
-            <dd><input type="datetime-local" value="${mealTo.dateTime}" name="dateTime" required></dd>
+            <dd><input type="datetime-local" value="${meal.dateTime}" name="dateTime" required></dd>
         </dl>
         <dl>
             <dt><spring:message code="meal.description"/>:</dt>
-            <dd><input type="text" value="${mealTo.description}" size=40 name="description" required></dd>
+            <dd><input type="text" value="${meal.description}" size=40 name="description" required></dd>
         </dl>
         <dl>
             <dt><spring:message code="meal.calories"/>:</dt>
-            <dd><input type="number" value="${mealTo.calories}" name="calories" required></dd>
+            <dd><input type="number" value="${meal.calories}" name="calories" required></dd>
         </dl>
         <button type="submit"><spring:message code="button.save"/></button>
         <button onclick="window.history.back()" type="button"><spring:message code="button.cancel"/></button>
