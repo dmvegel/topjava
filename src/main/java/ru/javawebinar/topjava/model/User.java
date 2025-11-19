@@ -141,8 +141,8 @@ public class User extends AbstractNamedEntity {
         return password;
     }
 
-    public List<Meal> getMeals() {
-        return meals.stream().toList();
+    public Set<Meal> getMeals() {
+        return meals;
     }
 
     @Override
