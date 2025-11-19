@@ -68,9 +68,9 @@ public class User extends AbstractNamedEntity {
     private int caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OrderBy("dateTime DESC")
     @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/a/44988100/548473
-    private List<Meal> meals;
+    @OrderBy("dateTime DESC")
+    private Set<Meal> meals;
 
     public User() {
     }
@@ -142,7 +142,7 @@ public class User extends AbstractNamedEntity {
     }
 
     public List<Meal> getMeals() {
-        return meals;
+        return meals.stream().toList();
     }
 
     @Override

@@ -10,7 +10,7 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <h2><spring:message code="meal.title"/></h2>
-    <form method="get" action="${pageContext.request.contextPath}/meals/filter">
+    <form method="get" action="meals/filter">
         <dl>
             <dt><spring:message code="date.from"/>:</dt>
             <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
@@ -30,7 +30,7 @@
         <button type="submit"><spring:message code="button.filter"/></button>
     </form>
     <hr/>
-    <a href="${pageContext.request.contextPath}/meals/create"><spring:message code="meal.add"/></a>
+    <a href="meals/create"><spring:message code="meal.add"/></a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -51,18 +51,13 @@
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
                 <td>
-                    <form method="get" action="${pageContext.request.contextPath}/meals/update">
+                    <form method="get" action="meals/update">
                         <input type="hidden" name="id" value="${meal.id}">
-                        <input type="hidden" name="dateTime" value="${meal.dateTime}">
-                        <input type="hidden" name="description"
-                               value="${meal.description}">
-                        <input type="hidden" name="calories" value="${meal.calories}">
-                        <input type="hidden" name="excess" value="${meal.excess}">
                         <button type="submit"><spring:message code="button.update"/></button>
                     </form>
                 </td>
                 <td>
-                    <form method="post" action="${pageContext.request.contextPath}/meals/delete">
+                    <form method="post" action="meals/delete">
                         <input type="hidden" name="id" value="${meal.id}">
                         <button type="submit"><spring:message code="button.delete"/></button>
                     </form>

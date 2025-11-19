@@ -10,9 +10,8 @@
 <c:set var="isCreate" value="${mealTo.id == null}"/>
 <section>
     <h2><spring:message code="${isCreate ? 'meal.add' : 'meal.edit'}"/></h2>
-    <form method="post" action="${isCreate ? 'create' : 'update'}">
+    <form method="post" action="meals/${isCreate ? 'create' : 'update'}">
         <input type="hidden" name="id" value="${mealTo.id}">
-        <input type="hidden" name="excess" value="${mealTo.excess}">
         <dl>
             <dt><spring:message code="meal.datetime"/>:</dt>
             <dd><input type="datetime-local" value="${mealTo.dateTime}" name="dateTime" required></dd>

@@ -6,10 +6,13 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.Set;
 
 public class ValidationUtil {
+    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
     private ValidationUtil() {
     }
 
@@ -48,7 +51,7 @@ public class ValidationUtil {
         }
     }
 
-    public static <T> void validate(T object, Validator validator) {
+    public static <T> void validate(T object) {
         Set<ConstraintViolation<T>> violations = validator.validate(object);
         if (!violations.isEmpty()) {
             throw new RuntimeException(new ConstraintViolationException(violations));
