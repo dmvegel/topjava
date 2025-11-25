@@ -16,7 +16,6 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -53,8 +52,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(MealsUtil.getTos(mealService.getAll(SecurityUtil.authUserId()),
-                        SecurityUtil.authUserCaloriesPerDay())));
+                .andExpect(MEAL_TO_MATCHER.contentJson(mealsTo));
     }
 
     @Test
@@ -85,23 +83,23 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-        LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 30);
-        LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 31);
-        LocalTime startTime = LocalTime.of(20, 0);
-        LocalTime endTime = LocalTime.of(23, 0);
+        String startDate = "2020-01-30";
+        String endDate = "2020-01-31";
+        String startTime = "20:00";
+        String endTime = "23:00";
         perform(MockMvcRequestBuilders.get(REST_URL + "filter")
-                .param("startDate", startDate.toString())
-                .param("endDate", endDate.toString())
-                .param("startTime", startTime.toString())
-                .param("endTime", endTime.toString()))
+                .param("startDate", startDate)
+                .param("endDate", endDate)
+                .param("startTime", startTime)
+                .param("endTime", endTime))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_TO_MATCHER.contentJson(MealsUtil
                         .getFilteredTos(mealService
                                         .getBetweenInclusive(
-                                                startDate,
-                                                endDate,
+                                                LocalDate.parse(startDate),
+                                                LocalDate.parse(endDate),
                                                 SecurityUtil.authUserId()),
-                                SecurityUtil.authUserCaloriesPerDay(), startTime, endTime)));
+                                SecurityUtil.authUserCaloriesPerDay(), LocalTime.parse(startTime), LocalTime.parse(endTime))));
     }
 }

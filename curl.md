@@ -1,10 +1,10 @@
 # meals #
 
-GET /topjava/rest/meals
+Get all meals:
 
     curl -X GET "http://localhost:8080/topjava/rest/meals"
 
-POST /topjava/rest/meals
+Create new meal:
 
     curl -X POST "http://localhost:8080/topjava/rest/meals" \
          -H "Content-Type: application/json" \
@@ -14,15 +14,15 @@ POST /topjava/rest/meals
                "calories": "111"
              }'
 
-GET /topjava/rest/meals/filter
+Filter meals
 
     curl -X GET "http://localhost:8080/topjava/rest/meals/filter?startDate=2020-01-30&endDate=2020-01-31&startTime=20:00&endTime=23:00"
 
-GET /topjava/rest/meals/100000
+Get meal
 
     curl -X GET "http://localhost:8080/topjava/rest/meals/100003"
 
-PUT /topjava/rest/meals/100000
+Update meal
 
     curl -X PUT "http://localhost:8080/topjava/rest/meals/100003" \
          -H "Content-Type: application/json" \
@@ -32,7 +32,7 @@ PUT /topjava/rest/meals/100000
                "calories": "111"
              }'
 
-DELETE /topjava/rest/meals/100000
+Delete meal
 
     curl -X DELETE "http://localhost:8080/topjava/rest/meals/100003"
     
