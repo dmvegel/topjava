@@ -26,6 +26,8 @@ import javax.annotation.PostConstruct;
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class, profiles = Profiles.REPOSITORY_IMPLEMENTATION)
 public abstract class AbstractControllerTest {
 
+    public static final String WITH_MEAL_URL_PATH = "/with-meal";
+
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
 
     static {
