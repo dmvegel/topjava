@@ -26,9 +26,6 @@ import java.time.LocalTime;
 })
 @Entity
 @Table(name = "meal", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meal_unique_user_datetime_idx")})
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id")
 public class Meal extends AbstractBaseEntity {
     public static final String ALL_SORTED = "Meal.getAll";
     public static final String DELETE = "Meal.delete";
