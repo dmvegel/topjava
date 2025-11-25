@@ -1,8 +1,10 @@
 package ru.javawebinar.topjava.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
+import ru.javawebinar.topjava.to.MealTo;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -62,6 +64,13 @@ public class Meal extends AbstractBaseEntity {
         this.calories = calories;
     }
 
+    public Meal(MealTo mealTo) {
+        super(mealTo.getId());
+        this.dateTime = mealTo.getDateTime();
+        this.description = mealTo.getDescription();
+        this.calories = mealTo.getCalories();
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
@@ -94,6 +103,7 @@ public class Meal extends AbstractBaseEntity {
         this.calories = calories;
     }
 
+    @JsonIgnore
     public User getUser() {
         return user;
     }
