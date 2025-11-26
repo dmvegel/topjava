@@ -72,4 +72,9 @@ public class MealTo {
                 Objects.equals(dateTime, mealTo.dateTime) &&
                 Objects.equals(description, mealTo.description);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, dateTime, description, calories, excess);
+    }
 }
