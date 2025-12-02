@@ -53,9 +53,9 @@ function updateTable() {
 
 $(document).on("click", ".enabled-cbx", function () {
     let checkbox = $(this);
-    let userId = checkbox.closest("tr").attr("id");
-    let enable = checkbox.is(":checked");
     let tr = checkbox.closest("tr");
+    let userId = tr.attr("id");
+    let enable = checkbox.is(":checked");
 
     $.ajax({
         url: ctx.ajaxUrl + userId + "/enable",
