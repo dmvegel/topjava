@@ -5,7 +5,6 @@ const ctx = {
     ajaxUrl: userAjaxUrl
 };
 
-// $(document).ready(function () {
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
@@ -44,4 +43,25 @@ $(function () {
             ]
         })
     );
+});
+
+function updateTable() {
+    $.get(ctx.ajaxUrl, function (data) {
+        ctx.datatableApi.clear().rows.add(data).draw();
+    });
+}
+
+$(document).on("click", ".enabled-cbx", function () {
+    let checkbox = $(this);
+    let userId = checkbox.closest("tr").attr("id");
+    let enable = checkbox.is(":checked");
+    let tr = checkbox.closest("tr");
+
+    $.ajax({
+        url: ctx.ajaxUrl + userId + "/enable",
+        type: "POST",
+        data: {enabled: enable},
+    }).done(function () {
+        tr.attr("data-user-enabled", enable);
+    });
 });

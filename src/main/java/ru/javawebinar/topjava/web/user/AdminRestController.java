@@ -8,19 +8,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.User;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = AdminRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-public class AdminRestController extends AbstractUserController {
+public class AdminRestController extends AbstractAdminController {
 
     static final String REST_URL = "/rest/admin/users";
-
-    @Override
-    @GetMapping
-    public List<User> getAll() {
-        return super.getAll();
-    }
 
     @Override
     @GetMapping("/{id}")
@@ -35,13 +28,6 @@ public class AdminRestController extends AbstractUserController {
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
-    }
-
-    @Override
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
-        super.delete(id);
     }
 
     @Override

@@ -6,24 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AdminUIController extends AbstractUserController {
-
-    @Override
-    @GetMapping
-    public List<User> getAll() {
-        return super.getAll();
-    }
-
-    @Override
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
-        super.delete(id);
-    }
+public class AdminUIController extends AbstractAdminController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
