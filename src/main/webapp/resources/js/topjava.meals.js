@@ -28,21 +28,14 @@ $(function () {
                     "orderable": false
                 }
             ],
-            "order": [
-                [
-                    0,
-                    "asc"
-                ]
-            ]
+            "order": []
         })
     );
 });
 
 function clearFilter() {
-    $("#startDate").val("");
-    $("#endDate").val("");
-    $("#startTime").val("");
-    $("#endTime").val("");
+    $("#filterForm").trigger("reset");
+    updateTable();
 }
 
 function updateTable() {

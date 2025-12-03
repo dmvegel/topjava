@@ -14,7 +14,7 @@
             <h3><spring:message code="meal.title"/></h3>
             <div class="card border-dark">
                 <div class="card-body">
-                    <form method="get" action="meals/filter">
+                    <form method="get" action="meals/filter" id="filterForm">
                         <div class="row">
                             <div class="col-2">
                                 <label for="startDate"><spring:message code="meal.startDate"/></label>

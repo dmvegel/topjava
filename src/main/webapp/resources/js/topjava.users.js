@@ -63,5 +63,7 @@ $(document).on("click", ".enabled-cbx", function () {
         data: {enabled: enable},
     }).done(function () {
         tr.attr("data-user-enabled", enable);
+    }).fail(function () {
+        checkbox.prop("checked", !enable);
     });
 });
