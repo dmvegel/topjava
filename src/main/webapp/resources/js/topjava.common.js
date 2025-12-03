@@ -72,3 +72,7 @@ function failNoty(jqXHR) {
     });
     failedNote.show()
 }
+
+function refreshTable(data) {
+    ctx.datatableApi.clear().rows.add(data).draw();
+}

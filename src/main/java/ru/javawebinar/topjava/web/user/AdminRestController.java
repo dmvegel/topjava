@@ -17,28 +17,15 @@ public class AdminRestController extends AbstractUserController {
     static final String REST_URL = "/rest/admin/users";
 
     @Override
-    @GetMapping("/{id}")
-    public User get(@PathVariable int id) {
-        return super.get(id);
-    }
-
-    @Override
     @GetMapping
     public List<User> getAll() {
         return super.getAll();
     }
 
-    @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void enable(@PathVariable int id, @RequestParam boolean enabled) {
-        service.enable(id, enabled);
-    }
-
     @Override
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
-        super.delete(id);
+    @GetMapping("/{id}")
+    public User get(@PathVariable int id) {
+        return super.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -48,6 +35,13 @@ public class AdminRestController extends AbstractUserController {
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
+    }
+
+    @Override
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int id) {
+        super.delete(id);
     }
 
     @Override
@@ -66,5 +60,11 @@ public class AdminRestController extends AbstractUserController {
     @GetMapping("/{id}/with-meals")
     public User getWithMeals(@PathVariable int id) {
         return super.getWithMeals(id);
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void enable(@PathVariable int id, @RequestParam boolean enabled) {
+        service.enable(id, enabled);
     }
 }

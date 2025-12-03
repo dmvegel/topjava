@@ -45,6 +45,6 @@ function updateTable() {
         startTime: $("#startTime").val(),
         endTime: $("#endTime").val()
     }, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
+        refreshTable(data);
     });
 }
