@@ -79,12 +79,10 @@
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 <script type="text/javascript">
-    const i18n = {}; // https://learn.javascript.ru/object
+    const i18n = {};
     i18n["addTitle"] = '<spring:message code="user.add"/>';
     i18n["editTitle"] = '<spring:message code="user.edit"/>';
 
-    <c:forEach var="key" items='${["common.deleted","common.saved","common.enabled","common.disabled","common.errorStatus","common.confirm"]}'>
-    i18n["${key}"] = "<spring:message code="${key}"/>";
-    </c:forEach>
+    <jsp:include page="fragments/i18nCommon.jsp"/>
 </script>
 </html>
