@@ -29,12 +29,6 @@ $(function () {
             "columns": [
                 {
                     "data": "dateTime",
-                    "render": function (date, type, row) {
-                        if (type === "display") {
-                            return date.replace('T', ' ').substring(0, 16);
-                        }
-                        return date;
-                    }
                 },
                 {
                     "data": "description"
@@ -64,4 +58,32 @@ $(function () {
             }
         })
     );
+});
+
+$.datetimepicker.setLocale(navigator.language.substring(0, 2));
+
+$('.datetimepicker').datetimepicker({
+    format: 'Y-m-d H:i'
+});
+
+$('.timepicker').datetimepicker({
+    datepicker: false,
+    format: 'H:i'
+});
+
+$('.datepicker').datetimepicker({
+    timepicker: false,
+    format: 'Y-m-d'
+});
+
+$.ajaxSetup({
+    converters: {
+        "text json": function (text) {
+            return JSON.parse(text,
+                function (key, value) {
+                    return (key === 'dateTime') ? value.substring(0, 16).replace('T', ' ') : value;
+                }
+            );
+        }
+    }
 });
