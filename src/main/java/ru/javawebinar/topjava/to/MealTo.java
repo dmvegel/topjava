@@ -23,7 +23,7 @@ public class MealTo extends BaseTo implements Serializable {
 
     @Range(min = 10, max = 5000)
     @NotNull
-    private final int calories;
+    private final Integer calories;
 
     @Nullable
     private final boolean excess;
