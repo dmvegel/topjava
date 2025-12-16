@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava.util;
 
 import org.springframework.core.NestedExceptionUtils;
-import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
 import ru.javawebinar.topjava.HasId;
@@ -9,12 +9,21 @@ import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.*;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ValidationUtil {
 
     private static final Validator validator;
+    public final static String USER_DUPLICATE_EMAIL_MSG_CODE = "user.duplicate";
+    public final static String MEAL_DUPLICATE_DATETIME_MSG_CODE = "meal.duplicate";
+    public final static String USERS_EMAIL_CONSTRAIN = "users_unique_email_idx";
+    public final static String MEAL_DATETIME_CONSTRAIN = "meal_unique_user_datetime_idx";
+
+    public final static Map<String, String> CONSTRAINS_I18N_MAP = Map.of(
+            USERS_EMAIL_CONSTRAIN, USER_DUPLICATE_EMAIL_MSG_CODE,
+            MEAL_DATETIME_CONSTRAIN, MEAL_DUPLICATE_DATETIME_MSG_CODE);
 
     static {
         //  From Javadoc: implementations are thread-safe and instances are typically cached and reused.
@@ -76,11 +85,16 @@ public class ValidationUtil {
         return rootCause != null ? rootCause : t;
     }
 
-    public static ResponseEntity<String> getErrorResponse(BindingResult result) {
-        return ResponseEntity.unprocessableEntity().body(
-                result.getFieldErrors().stream()
-                        .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                        .collect(Collectors.joining("<br>"))
-        );
+    public static String getErrorMessage(BindingResult result) {
+        return result.getFieldErrors().stream()
+                .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
+                .collect(Collectors.joining(";<br>"));
+    }
+
+    public static void appendDuplicateEmailError(DataIntegrityViolationException e, BindingResult result) {
+        Throwable root = getRootCause(e);
+        if (root.getMessage() != null && root.getMessage().toLowerCase().contains(USERS_EMAIL_CONSTRAIN)) {
+            result.rejectValue("email", USER_DUPLICATE_EMAIL_MSG_CODE);
+        }
     }
 }

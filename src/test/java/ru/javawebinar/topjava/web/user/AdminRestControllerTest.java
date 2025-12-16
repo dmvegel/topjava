@@ -1,15 +1,22 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.javawebinar.topjava.UserTestData;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
+
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.util.ValidationUtil.USER_DUPLICATE_EMAIL_MSG_CODE;
 
 class AdminRestControllerTest extends AbstractControllerTest {
 
@@ -25,6 +33,11 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MessageSource messageSource;
+
+    private static final Locale LOCALE = LocaleContextHolder.getLocale();
 
     @Test
     void get() throws Exception {
@@ -142,5 +155,59 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         assertFalse(userService.get(USER_ID).isEnabled());
+    }
+
+    @Test
+    void updateValidationError() throws Exception {
+        User user = new User(USER_ID, "", "", "", 0);
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(user, user.getPassword())))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void createValidationError() throws Exception {
+        User user = new User(USER_ID + 100, "", "", "", 0);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(user, user.getPassword())))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void duplicateEmailCreate() throws Exception {
+        User newUser = getNew();
+        newUser.setEmail(user.getEmail());
+        MvcResult result = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .locale(Locale.forLanguageTag(LOCALE.toLanguageTag()))
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andExpect(status().isConflict())
+                .andReturn();
+
+        Assertions.assertTrue(result.getResponse().getContentAsString()
+                .contains(messageSource.getMessage(USER_DUPLICATE_EMAIL_MSG_CODE, null, LOCALE)));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void duplicateEmailUpdate() throws Exception {
+        User newUser = getNew();
+        newUser.setEmail(guest.getEmail());
+        MvcResult result = perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .locale(Locale.forLanguageTag(LOCALE.toLanguageTag()))
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andExpect(status().isConflict())
+                .andReturn();
+
+        Assertions.assertTrue(result.getResponse().getContentAsString()
+                .contains(messageSource.getMessage(USER_DUPLICATE_EMAIL_MSG_CODE, null, LOCALE)));
     }
 }
