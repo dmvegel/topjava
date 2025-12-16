@@ -46,6 +46,21 @@ public class ExceptionInfoHandler {
         return logAndGetErrorInfo(req, e, false, DATA_NOT_FOUND);
     }
 
+    @ResponseStatus(value = HttpStatus.CONFLICT)  // 409
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e, Locale locale) {
+        String rootMsg = ValidationUtil.getRootCause(e).getMessage();
+        if (rootMsg != null) {
+            String lowerCaseMsg = rootMsg.toLowerCase();
+            for (Map.Entry<String, String> entry : CONSTRAINS_I18N_MAP.entrySet()) {
+                if (lowerCaseMsg.contains(entry.getKey())) {
+                    return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, messageSource.getMessage(entry.getValue(), null, locale));
+                }
+            }
+        }
+        return logAndGetErrorInfo(req, e, false, DATA_ERROR);
+    }
+
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)  // 422
     @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
     public ErrorInfo validationError(HttpServletRequest req, Exception e) {
@@ -70,21 +85,6 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(Exception.class)
     public ErrorInfo internalError(HttpServletRequest req, Exception e) {
         return logAndGetErrorInfo(req, e, true, APP_ERROR);
-    }
-
-    @ResponseStatus(value = HttpStatus.CONFLICT)  // 409
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e, Locale locale) {
-        String rootMsg = ValidationUtil.getRootCause(e).getMessage();
-        if (rootMsg != null) {
-            String lowerCaseMsg = rootMsg.toLowerCase();
-            for (Map.Entry<String, String> entry : CONSTRAINS_I18N_MAP.entrySet()) {
-                if (lowerCaseMsg.contains(entry.getKey())) {
-                    return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, messageSource.getMessage(entry.getValue(), null, locale));
-                }
-            }
-        }
-        return logAndGetErrorInfo(req, e, false, DATA_ERROR);
     }
 
     //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
