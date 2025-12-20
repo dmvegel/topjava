@@ -37,14 +37,14 @@
         <webjars-datatables.version>1.13.5</webjars-datatables.version>
 
         <!-- Logging -->
-        <logback.version>1.5.20</logback.version>
+        <logback.version>1.5.18</logback.version>
         <slf4j.version>2.0.17</slf4j.version>
 
         <!--DB-->
-        <postgresql.version>42.7.8</postgresql.version>
+        <postgresql.version>42.7.7</postgresql.version>
         <!--    Tests  -->
-        <junit.version>5.14.1</junit.version>
-        <assertj.version>3.27.6</assertj.version>
+        <junit.version>5.13.4</junit.version>
+        <assertj.version>3.27.3</assertj.version>
         <hamcrest.version>3.0</hamcrest.version>
         <json-path.version>2.9.0</json-path.version>
     </properties>
@@ -71,7 +71,7 @@
                 <!--https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.4</version>
+                <version>3.5.3</version>
                 <configuration>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
@@ -82,7 +82,7 @@
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven3-plugin</artifactId>
-                <version>1.10.24</version>
+                <version>1.10.20</version>
                 <configuration>
                     <container>
                         <containerId>tomcat9x</containerId>
@@ -352,7 +352,7 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>1.14.1</version>
+            <version>1.13.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

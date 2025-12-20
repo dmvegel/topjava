@@ -69,6 +69,22 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void registerDuplicate() throws Exception {
+        UserTo newTo = new UserTo(null, "newName", "admin@gmail.com", "newPassword", 1500);
+        User newUser = UsersUtil.createNewFromTo(newTo);
+
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR))
+                .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL));
+    }
+
+    @Test
     void update() throws Exception {
         // ValidationUtil.assureIdConsistent called after validation, needs workaround
         UserTo updatedTo = new UserTo(null, "newName", "user@yandex.ru", "newPassword", 1500);
